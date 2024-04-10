@@ -4,6 +4,10 @@
 
 This project demonstrates creating a distance-responsive LED effect using the Nicla Vision board and VL53L1X Time-of-Flight (ToF) sensor. An RGB LED changes its color and blink rate based on the measured distance, offering a dynamic way to visualize sensor readings.
 
+![niclafront](https://docs.arduino.cc/static/868c8ff65997388c7d8ba0386108ade0/d9ed5/arch-top.png)
+
+![niclaback](https://docs.arduino.cc/static/79f6c8e6e9f4021a4d12b223af728dca/d9ed5/arch-bot.png)
+
 ### Features
 
 - Utilizes the VL53L1X sensor for accurate distance measurements.
