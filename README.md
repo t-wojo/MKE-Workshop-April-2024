@@ -31,72 +31,67 @@ Modify the "Blinky" sketch to include the cloud variables for the RGB LED, push 
 ```cpp
 #include "thingProperties.h"
 
-// Define cloud variables for RGB LED, push buttons, and A0 value
+// Declare RGB LED color variables at the global scope
 int RGB_LED_RED = 0;
 int RGB_LED_GREEN = 0;
 int RGB_LED_BLUE = 0;
-int PUSH_BUTTON_1 = 0;
-int PUSH_BUTTON_2 = 0;
 int A0_VALUE = 0;
 
 void setup() {
- Serial.begin(9600); // Initialize serial communication at 9600 baud rate
- delay(1500); // Wait for 1.5 seconds to ensure the serial port is ready
- initProperties(); // Initialize cloud properties
- ArduinoCloud.begin(ArduinoIoTPreferredConnection); // Connect to Arduino IoT Cloud
- setDebugMessageLevel(2); // Set debug message level to 2 for detailed logs
- ArduinoCloud.printDebugInfo(); // Print debug information
+  // Initialize serial and wait for port to open:
+  Serial.begin(9600);
+  delay(1500); // Wait for Serial Monitor to open
+
+  // Initialize the built-in RGB LED pins as outputs
+  pinMode(LEDR, OUTPUT);
+  pinMode(LEDG, OUTPUT);
+  pinMode(LEDB, OUTPUT);
+
+  // Initialize the analog pin as an input
+  pinMode(A0, INPUT);
+
+  // Defined in thingProperties.h
+  initProperties();
+
+  // Connect to Arduino IoT Cloud
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+  
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo();
 }
 
 void loop() {
- ArduinoCloud.update(); // Update Arduino Cloud connection
+  ArduinoCloud.update();
 
- // Control RGB LED based on cloud variables
- analogWrite(LED_BUILTIN_R, RGB_LED_RED); // Set red LED intensity
- analogWrite(LED_BUILTIN_G, RGB_LED_GREEN); // Set green LED intensity
- analogWrite(LED_BUILTIN_B, RGB_LED_BLUE); // Set blue LED intensity
+  // Read the analog voltage from A0
+  A0_VALUE = analogRead(A0);
 
- // Handle push buttons (assuming they are connected to digital pins)
- if (PUSH_BUTTON_1 == 1) {
-    // Toggle RGB LED when push button 1 is pressed
-    RGB_LED_RED = !RGB_LED_RED; // Toggle red LED
-    RGB_LED_GREEN = !RGB_LED_GREEN; // Toggle green LED
-    RGB_LED_BLUE = !RGB_LED_BLUE; // Toggle blue LED
- }
- if (PUSH_BUTTON_2 == 1) {
-    // Add logic for push button 2 action, for example, resetting the LED
-    RGB_LED_RED = 0; // Turn off red LED
-    RGB_LED_GREEN = 0; // Turn off green LED
-    RGB_LED_BLUE = 0; // Turn off blue LED
- }
-
- // Read A0 value and update the cloud variable
- A0_VALUE = analogRead(A0); // Read the value from A0
- // Optionally, you can map the A0 value to a range suitable for your application
- // For example, to map the A0 value (0-1023) to a range of 0-255 for the LED
- int mappedA0Value = map(A0_VALUE, 0, 1023, 0, 255); // Map A0 value to 0-255
- // Use mappedA0Value as needed, for example, to control another LED or component
+  // Control the RGB LED based on cloud variables
+  analogWrite(LEDR, RGB_LED_RED);
+  analogWrite(LEDG, RGB_LED_GREEN);
+  analogWrite(LEDB, RGB_LED_BLUE);
 }
 
-// Cloud variable setters
+// Functions to handle changes in the cloud variables for controlling the RGB LED
+// Since your variables are already bound to the cloud properties, these handlers
+// will automatically be called upon changes. Make sure these function names match
+// exactly with those declared in the thingProperties.h file.
 void onRGB_LED_REDChange() {
- RGB_LED_RED = cloud.getInt("RGB_LED_RED"); // Update red LED intensity from the cloud
+  // RGB_LED_RED is automatically updated
 }
+
 void onRGB_LED_GREENChange() {
- RGB_LED_GREEN = cloud.getInt("RGB_LED_GREEN"); // Update green LED intensity from the cloud
+  // RGB_LED_GREEN is automatically updated
 }
+
 void onRGB_LED_BLUEChange() {
- RGB_LED_BLUE = cloud.getInt("RGB_LED_BLUE"); // Update blue LED intensity from the cloud
+  // RGB_LED_BLUE is automatically updated
 }
-void onPUSH_BUTTON_1Change() {
- PUSH_BUTTON_1 = cloud.getInt("PUSH_BUTTON_1"); // Update push button 1 state from the cloud
-}
-void onPUSH_BUTTON_2Change() {
- PUSH_BUTTON_2 = cloud.getInt("PUSH_BUTTON_2"); // Update push button 2 state from the cloud
-}
+
 void onA0_VALUEChange() {
- A0_VALUE = cloud.getInt("A0_VALUE"); // Update A0 value from the cloud
+  // A0_VALUE is automatically updated
 }
+
 
 ```
 
